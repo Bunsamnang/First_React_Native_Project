@@ -1,13 +1,54 @@
-import { Link } from "expo-router";
-import { Text, View } from "react-native";
+import { Redirect, router } from "expo-router";
+import { Image, ScrollView, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { images } from "../constants";
+import CustomeButton from "./components/CustomeButton";
+import { StatusBar } from "expo-status-bar";
 
 export default function Index() {
   return (
-    <View className="flex-1 justify-center items-center">
-      <Text className="text-red-500 font-pblack">
-        Edit app/index.tsx to edit this screen.
-      </Text>
-      <Link href={"/(tabs)/home"}>Go to home</Link>
-    </View>
+    <SafeAreaView className=" bg-primary h-full">
+      <ScrollView>
+        <View className="flex-1 min-h-[85vh] justify-center  items-center px-10 py-2 lg:px-96">
+          <Image
+            source={images.logo}
+            className="w-[138px] h-[84px]"
+            resizeMode="contain"
+          />
+
+          <Image
+            source={images.cards}
+            className="w-full max-w-[380px] h-[300px]"
+            resizeMode="contain"
+          />
+
+          <View className="relative mt-5">
+            <Text className="text-white text-3xl text-center font-bold">
+              Discover Endless Possibilities with
+              <Text className="text-secondary-200"> Aora</Text>
+            </Text>
+            <Image
+              source={images.path}
+              className="w-[138px] h-[15px] absolute -bottom-2 -right-10 lg:-bottom-8"
+              resizeMode="contain"
+            />
+          </View>
+
+          <Text className="text-white mt-7 text-sm text-center font-pregular">
+            Where creativity meets innovation: embark on a journey of limitless
+            exploration with Aora
+          </Text>
+
+          <CustomeButton
+            title="Continue with email"
+            handlePress={() => {
+              router.push("/sign-in");
+            }}
+            isLoading={false}
+          />
+        </View>
+      </ScrollView>
+      <StatusBar backgroundColor="#161622" style="light" />
+    </SafeAreaView>
   );
 }
