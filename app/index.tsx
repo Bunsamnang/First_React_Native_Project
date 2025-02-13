@@ -7,12 +7,12 @@ import { StatusBar } from "expo-status-bar";
 
 export default function Index() {
   return (
-    <SafeAreaView className=" bg-primary h-full">
+    <SafeAreaView className="bg-primary h-full">
       <ScrollView>
         <View className="flex-1 min-h-[85vh] justify-center  items-center px-10 py-2 lg:px-96">
           <Image
             source={images.logo}
-            className="w-[138px] h-[84px]"
+            className="w-36 h-20"
             resizeMode="contain"
           />
 
@@ -29,7 +29,7 @@ export default function Index() {
             </Text>
             <Image
               source={images.path}
-              className="w-[138px] h-[15px] absolute -bottom-2 -right-10 lg:-bottom-8"
+              className="w-36 h-4 absolute -bottom-2 -right-10 lg:-bottom-8"
               resizeMode="contain"
             />
           </View>

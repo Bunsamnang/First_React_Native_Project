@@ -7,6 +7,7 @@ import FormField from "../components/FormField";
 import { zodResolver } from "./../../node_modules/@hookform/resolvers/zod/src/zod";
 import { SignInCredential, signinSchema } from "@/auth/auth.model";
 import CustomButton from "../components/CustomButton";
+import { Link } from "expo-router";
 const SignIn = () => {
   const {
     control,
@@ -24,13 +25,13 @@ const SignIn = () => {
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView>
-        <View className="flex-1 min-h-[85vh] items-center justify-center py-5 px-3">
-          <View className="h-full w-full  py-4 px-6 ">
+        <View className="w-full min-h-[85vh] items-center justify-center px-10 py-3">
+          <View className="w-full ">
             <View className="items-center">
               <Image
                 source={images.logo}
                 resizeMode="contain"
-                className="w-[118px] h-[35px]"
+                className="w-32 h-9"
               />
               <Text className="text-white text-3xl my-10 font-pbold font-bold ">
                 Log in to Aora
@@ -46,6 +47,7 @@ const SignIn = () => {
                     title="Email"
                     placeholder="Enter your email"
                     onChangeText={onChange}
+                    onBlur={onBlur}
                     value={value}
                   />
                 )}
@@ -59,6 +61,7 @@ const SignIn = () => {
                 name="password"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <FormField
+                    onBlur={onBlur}
                     title="Password"
                     placeholder="Enter your password"
                     onChangeText={onChange}
@@ -76,6 +79,18 @@ const SignIn = () => {
                 isLoading={isSubmitting}
                 textStyle=""
               />
+            </View>
+
+            <View className="flex-row justify-center items-center mt-5 gap-2">
+              <Text className="text-gray-100 text-lg">
+                Don't have an account?
+              </Text>
+              <Link
+                href={"/sign-up"}
+                className="text-lg text-secondary font-psemibold underline"
+              >
+                Sign up
+              </Link>
             </View>
           </View>
         </View>
