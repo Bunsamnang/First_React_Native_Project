@@ -1,10 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
+import { Text, TouchableOpacity } from "react-native";
 
 interface CustomButtonProps {
   title: string;
   isLoading: boolean;
-  textStyle?: object;
+  textStyle?: string;
   handlePress: () => void;
 }
 
@@ -16,7 +16,7 @@ const CustomeButton = ({
 }: CustomButtonProps) => {
   return (
     <TouchableOpacity
-      className={`w-full lg:w-1/2 min-h-[60px] bg-secondary justify-center items-center rounded-xl mt-10 ${
+      className={`w-full min-h-[60px] bg-secondary justify-center items-center rounded-xl mt-10 ${
         isLoading ? "opacity-50" : ""
       } `}
       disabled={isLoading}

@@ -2,7 +2,7 @@ import { Redirect, router } from "expo-router";
 import { Image, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../constants";
-import CustomeButton from "./components/CustomeButton";
+import CustomButton from "./components/CustomButton";
 import { StatusBar } from "expo-status-bar";
 
 export default function Index() {
@@ -39,7 +39,7 @@ export default function Index() {
             exploration with Aora
           </Text>
 
-          <CustomeButton
+          <CustomButton
             title="Continue with email"
             handlePress={() => {
               router.push("/sign-in");
