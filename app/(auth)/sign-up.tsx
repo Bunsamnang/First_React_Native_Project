@@ -7,6 +7,7 @@ import FormField from "../components/FormField";
 import { zodResolver } from "@hookform/resolvers/zod/src/zod";
 import { SignUpCredential, signupSchema } from "@/auth/auth.model";
 import CustomeButton from "../components/CustomButton";
+import { createUser } from "@/lib/appwrite";
 const SignUp = () => {
   const {
     control,
@@ -17,7 +18,9 @@ const SignUp = () => {
   });
 
   const onSubmit = (formData: SignUpCredential) => {
+    createUser(formData.email, formData.password, formData.username);
     console.log(formData);
+
     alert("You submitted");
   };
 
