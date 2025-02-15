@@ -19,7 +19,7 @@ const FormField = ({
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
-  const isPasswordField = title === "Password" || title === "Confirm Password";
+  const isPasswordField = title === "Password";
   return (
     <View className="gap-2 w-full">
       <Text className="text-start text-gray-100">{title}</Text>

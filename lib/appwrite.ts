@@ -1,4 +1,12 @@
-import { Account, Avatars, Client, ID } from "react-native-appwrite";
+import {
+  Account,
+  AppwriteException,
+  Avatars,
+  Client,
+  Databases,
+  ID,
+  Query,
+} from "react-native-appwrite";
 
 export const appwriteConfig = {
   endpoint: "https://cloud.appwrite.io/v1",
@@ -19,20 +27,84 @@ client
 
 const account = new Account(client);
 const avatar = new Avatars(client);
+const database = new Databases(client);
 
 export const createUser = async (
   email: string,
   password: string,
-  name?: string
+  username?: string
 ) => {
   try {
-    const newUser = await account.create(ID.unique(), email, password, name);
+    //create new account (auth)
+    const newAccount = await account.create(
+      ID.unique(),
+      email,
+      password,
+      username
+    );
 
-    if (!newUser) throw Error;
+    if (!newAccount) {
+      console.log("Error: User creation failed at the account level.");
+      throw new Error("Account creation failed.");
+    }
 
-    const avatarUrl = await avatar.getInitials(newUser.name);
+    const avatarUrl = avatar.getInitials(newAccount.name);
+
+    await signin(email, password);
+
+    // store the accountId, avatar, username, email to users collection
+    const newUser = await database.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      ID.unique(),
+      {
+        accountId: newAccount.$id,
+        avatar: avatarUrl,
+        email,
+        username,
+      }
+    );
+    return newUser;
   } catch (error) {
-    console.log(error);
-    throw new Error("Unknown error");
+    throw error;
+  }
+};
+
+export const signin = async (email: string, password: string) => {
+  try {
+    const session = await account.createEmailPasswordSession(email, password);
+    if (!session) {
+      console.log("Error: Session creation failed");
+      throw new Error("Session creation failed.");
+    }
+
+    console.log("Session created:", session);
+
+    return session;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCurrentUser = async () => {
+  try {
+    const currentAccount = await account.get();
+    if (!currentAccount) {
+      throw Error;
+    }
+
+    const currentUser = await database.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      [Query.equal("accountId", currentAccount.$id)]
+    );
+
+    if (!currentUser) {
+      throw Error;
+    }
+
+    return currentUser.documents[0];
+  } catch (error) {
+    throw error;
   }
 };

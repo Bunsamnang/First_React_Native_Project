@@ -1,4 +1,4 @@
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
@@ -7,19 +7,42 @@ import FormField from "../components/FormField";
 import { zodResolver } from "./../../node_modules/@hookform/resolvers/zod/src/zod";
 import { SignInCredential, signinSchema } from "@/auth/auth.model";
 import CustomButton from "../components/CustomButton";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { getCurrentUser, signin } from "@/lib/appwrite";
+import { AppwriteException } from "react-native-appwrite";
+import { useUserContext } from "@/hooks/useUserContext";
 const SignIn = () => {
   const {
     control,
     handleSubmit,
+
     formState: { errors, isSubmitting },
   } = useForm<SignInCredential>({
     resolver: zodResolver(signinSchema),
   });
 
-  const onSubmit = (formData: SignInCredential) => {
-    console.log(formData);
-    alert("You submitted");
+  const { setUser } = useUserContext();
+
+  const onSubmit = async (formData: SignInCredential) => {
+    try {
+      // this sign in returns session, not user
+      await signin(formData.email, formData.password);
+
+      const result = await getCurrentUser();
+
+      setUser(result);
+
+      router.replace("/home");
+    } catch (error) {
+      console.log("Caught error:", error);
+
+      if (error instanceof AppwriteException) {
+        Alert.alert("Error", error.message || "An Appwrite error occurred.");
+        alert(error.message);
+      } else {
+        Alert.alert("Error", "Unknown error");
+      }
+    }
   };
 
   return (
@@ -77,7 +100,6 @@ const SignIn = () => {
                 title="Submit"
                 handlePress={handleSubmit(onSubmit)}
                 isLoading={isSubmitting}
-                textStyle=""
               />
             </View>
 

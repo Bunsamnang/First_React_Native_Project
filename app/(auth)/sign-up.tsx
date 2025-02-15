@@ -1,4 +1,4 @@
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
@@ -8,20 +8,44 @@ import { zodResolver } from "@hookform/resolvers/zod/src/zod";
 import { SignUpCredential, signupSchema } from "@/auth/auth.model";
 import CustomeButton from "../components/CustomButton";
 import { createUser } from "@/lib/appwrite";
+import { AppwriteException } from "react-native-appwrite";
+import { router } from "expo-router";
+import { useUserContext } from "@/hooks/useUserContext";
 const SignUp = () => {
   const {
     control,
     handleSubmit,
+
     formState: { errors, isSubmitting },
   } = useForm<SignUpCredential>({
     resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit = (formData: SignUpCredential) => {
-    createUser(formData.email, formData.password, formData.username);
+  const { setUser } = useUserContext();
+
+  const onSubmit = async (formData: SignUpCredential) => {
     console.log(formData);
 
-    alert("You submitted");
+    try {
+      const result = await createUser(
+        formData.email,
+        formData.password,
+        formData.username
+      );
+
+      setUser(result);
+
+      router.replace("/home");
+    } catch (error) {
+      console.log("Caught error:", error);
+      alert("Erorr");
+
+      if (error instanceof AppwriteException) {
+        Alert.alert("Error", error.message || "An Appwrite error occurred.");
+      } else {
+        Alert.alert("Error", "Unknown error");
+      }
+    }
   };
 
   return (
@@ -91,26 +115,6 @@ const SignUp = () => {
               {errors.password && (
                 <Text className="text-red-500">{errors.password.message}</Text>
               )}
-
-              <Controller
-                control={control}
-                name="confirmPassword"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <FormField
-                    title="Confirm Password"
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    placeholder=""
-                  />
-                )}
-              />
-              {errors.confirmPassword && (
-                <Text className="text-red-500">
-                  {errors.confirmPassword.message}
-                </Text>
-              )}
-
               <CustomeButton
                 isLoading={isSubmitting}
                 title="Sign up"
