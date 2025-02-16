@@ -1,10 +1,10 @@
 import {
   Account,
-  AppwriteException,
   Avatars,
   Client,
   Databases,
   ID,
+  Models,
   Query,
 } from "react-native-appwrite";
 
@@ -17,13 +17,24 @@ export const appwriteConfig = {
   videoCollectionId: "67aeb8bb002c46c2d2e7",
   storageId: "67aebafd003a2ab90dc2",
 };
+
+const {
+  databaseId,
+  endpoint,
+  platform,
+  projectId,
+  storageId,
+  userCollectionId,
+  videoCollectionId,
+} = appwriteConfig;
+
 // Init your React Native SDK
 const client = new Client();
 
 client
-  .setEndpoint(appwriteConfig.endpoint) // Your Appwrite Endpoint
-  .setProject(appwriteConfig.projectId) // Your project ID
-  .setPlatform(appwriteConfig.platform); // Your application ID or bundle ID.
+  .setEndpoint(endpoint) // Your Appwrite Endpoint
+  .setProject(projectId) // Your project ID
+  .setPlatform(platform); // Your application ID or bundle ID.
 
 const account = new Account(client);
 const avatar = new Avatars(client);
@@ -54,8 +65,8 @@ export const createUser = async (
 
     // store the accountId, avatar, username, email to users collection
     const newUser = await database.createDocument(
-      appwriteConfig.databaseId,
-      appwriteConfig.userCollectionId,
+      databaseId,
+      userCollectionId,
       ID.unique(),
       {
         accountId: newAccount.$id,
@@ -94,8 +105,8 @@ export const getCurrentUser = async () => {
     }
 
     const currentUser = await database.listDocuments(
-      appwriteConfig.databaseId,
-      appwriteConfig.userCollectionId,
+      databaseId,
+      userCollectionId,
       [Query.equal("accountId", currentAccount.$id)]
     );
 
@@ -104,6 +115,27 @@ export const getCurrentUser = async () => {
     }
 
     return currentUser.documents[0];
+  } catch (error) {
+    throw error;
+  }
+};
+
+export interface Post extends Models.Document {
+  title: string;
+  thumbnail: string;
+  video: string;
+  prompt: string;
+  creator: {
+    username: string;
+    avatar: string;
+  };
+}
+
+export const getAllPosts = async () => {
+  try {
+    const result = await database.listDocuments(databaseId, videoCollectionId);
+
+    return result.documents as Post[];
   } catch (error) {
     throw error;
   }

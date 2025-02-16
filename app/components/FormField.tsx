@@ -25,8 +25,8 @@ const FormField = ({
       <Text className="text-start text-gray-100">{title}</Text>
 
       <View
-        className={`w-full h-16 px-4 bg-black-200 border-2 ${
-          isFocused ? "border-secondary" : "border-black-300"
+        className={`w-full h-16 px-4 bg-black-100 border-2 ${
+          isFocused ? "border-secondary" : "border-black-200"
         } rounded-xl flex-row items-center `}
       >
         <TextInput

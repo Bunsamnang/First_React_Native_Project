@@ -48,7 +48,7 @@ const SignIn = () => {
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView>
-        <View className="w-full min-h-[85vh] items-center justify-center px-10 py-3">
+        <View className="w-full min-h-[85vh] items-center justify-center px-10 py-2">
           <View className="w-full ">
             <View className="items-center">
               <Image
