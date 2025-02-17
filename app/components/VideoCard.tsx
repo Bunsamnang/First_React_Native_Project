@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Models } from "react-native-appwrite";
 import { Post } from "@/lib/appwrite";
 import { icons } from "../../constants";
+import { useVideoPlayer, VideoView } from "expo-video";
 
 interface VideoCardProps {
   video: Post;
@@ -17,10 +18,14 @@ const VideoCard = ({
     prompt,
   },
 }: VideoCardProps) => {
+  // const videoSource =
+  //   "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+
   const [play, setPlay] = useState(false);
+  const player = useVideoPlayer(video);
 
   return (
-    <View className="w-full px-4">
+    <View className="w-full px-4 mb-10">
       <View className="flex-row justify-between items-start my-4">
         <View className=" flex-row gap-x-4 items-center">
           <TouchableOpacity>
@@ -45,11 +50,19 @@ const VideoCard = ({
       </View>
 
       {play ? (
-        <Text className="text-white">Playing</Text>
+        <VideoView
+          player={player}
+          allowsFullscreen
+          allowsPictureInPicture
+          style={{ width: "100%", height: 240 }} // Explicit width and height for VideoView
+        />
       ) : (
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => setPlay(true)}
+          onPress={() => {
+            setPlay(true);
+            player.play();
+          }}
           className="w-full h-60 rounded-xl mt-0.5 relative justify-center items-center"
         >
           <Image

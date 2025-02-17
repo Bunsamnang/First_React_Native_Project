@@ -1,10 +1,9 @@
-import { getCurrentUser } from "@/lib/appwrite";
+import { getCurrentUser, User } from "@/lib/appwrite";
 import React, { createContext, useEffect, useState } from "react";
-import { Models } from "react-native-appwrite";
 
 interface UserContextType {
-  user: Models.Document | null;
-  setUser: (user: Models.Document | null) => void;
+  user: User | null;
+  setUser: (user: User | null) => void;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
 }
@@ -12,7 +11,7 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<Models.Document | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

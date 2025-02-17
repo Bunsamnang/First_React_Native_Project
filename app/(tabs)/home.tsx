@@ -8,9 +8,10 @@ import EmptyState from "../components/EmptyState";
 import SearchInput from "../components/SearchInput";
 import Trending from "../components/Trending";
 import { useAppwriteData } from "@/lib/useAppwriteData";
-import { getAllPosts } from "@/lib/appwrite";
+import { getAllPosts, getLatestPosts } from "@/lib/appwrite";
 import VideoCard from "../components/VideoCard";
 import { Models } from "react-native-appwrite";
+import { useUserContext } from "@/hooks/useUserContext";
 
 interface Post extends Models.Document {
   title: string;
@@ -24,13 +25,10 @@ interface Post extends Models.Document {
 }
 
 const Home = () => {
-  const {
-    data: posts,
-    isLoading,
-    refetch,
-  } = useAppwriteData<Post>(getAllPosts);
+  const { user } = useUserContext();
+  const { data: posts, refetch } = useAppwriteData<Post>(getAllPosts);
 
-  console.log(posts);
+  const { data: latesPosts } = useAppwriteData<Post>(getLatestPosts);
 
   return (
     <SafeAreaView className="h-full bg-primary">
@@ -45,7 +43,9 @@ const Home = () => {
                 <Text className="text-gray-100 text-sm font-pregular">
                   Welcome Back
                 </Text>
-                <Text className="text-2xl text-white font-psemibold">Nang</Text>
+                <Text className="text-2xl text-white font-psemibold">
+                  {user?.username}
+                </Text>
               </View>
               <Image
                 source={images.logoSmall}
@@ -55,9 +55,9 @@ const Home = () => {
             </View>
             <SearchInput placeholder="Search for a video topic" />
 
-            <View className="w-full flex-1">
+            <View>
               <Text className="text-slate-500 text-base">Latest videos</Text>
-              <Trending posts={[{ id: 1 }, { id: 2 }, { id: 3 }]} />
+              <Trending posts={latesPosts} />
             </View>
           </View>
         )}

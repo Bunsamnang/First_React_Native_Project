@@ -114,7 +114,7 @@ export const getCurrentUser = async () => {
       throw Error;
     }
 
-    return currentUser.documents[0];
+    return currentUser.documents[0] as User;
   } catch (error) {
     throw error;
   }
@@ -131,9 +131,28 @@ export interface Post extends Models.Document {
   };
 }
 
+export interface User extends Models.Document {
+  email: string;
+  username: string;
+  avatar: string;
+}
+
 export const getAllPosts = async () => {
   try {
     const result = await database.listDocuments(databaseId, videoCollectionId);
+
+    return result.documents as Post[];
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getLatestPosts = async () => {
+  try {
+    const result = await database.listDocuments(databaseId, videoCollectionId, [
+      Query.orderDesc("$createdAt"),
+      Query.limit(7),
+    ]);
 
     return result.documents as Post[];
   } catch (error) {
